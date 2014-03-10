@@ -110,14 +110,11 @@ define([
 			var widthItem = Math.round((self.$el.width() - (self.options.columns * 2 - 1) * self.options.margin) / self.options.columns / 2);
 			var rowWidth = (widthItem * self.options.columns * 2) + ((self.options.columns * 2 - 1) * self.options.margin);
 			var deltaLast = rowWidth - self.$el.width();
-
 			
 			self.$el.find(self.elms.item).each(function() {
 				var type = $(this).data('type');
 				var last = $(this).is('.last');
-
-				var rate = $(this).data('rate');
-					rate = (rate == undefined) ? 1 * widthItem : rate * widthItem;
+				var rate = $(this).data('rate') || 1;
 				
 				switch (type) {
 					case '2x1':
@@ -134,18 +131,23 @@ define([
 						$(this).width('100%').height(widthItem * 2 + self.options.margin);	
 						break;												
 				}
+				
 				if (last == false && self.options.margin > 0) {
 					$(this).css({'marginRight': self.options.margin});			
 				}
-				
-				
 					
 				if ($(this).is('.text-left')) {
-					$(this).find('.chess-grid-text').width(rate);
-					$(this).find('.chess-grid-image').css('marginLeft', rate);
+					$(this).find('.chess-grid-text').width(widthItem);
+					$(this).find('.chess-grid-image').css('marginLeft', widthItem);
 				}
 				if ($(this).is('.text-right')) {
-					var w = $(this).width() - rate;
+					var w = '50%';
+					if (rate != 2) {
+						w = (widthItem * 2 + self.options.margin - widthItem) * rate;
+					
+						if ($(this).is('.last'))
+							w -= deltaLast;
+					}		
 					$(this).find('.chess-grid-text').width(w);
 					$(this).find('.chess-grid-image').css('marginRight', w);
 				}			
