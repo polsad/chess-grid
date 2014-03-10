@@ -21,6 +21,7 @@ define([
 			if (! self.options.columns) self.options.columns = 2;
 			if (! self.options.margin) self.options.margin = 0;
 			
+			// Render grid
 			self.renderGrid();
 
             if (true == ('onorientationchange' in window)) {
@@ -81,6 +82,22 @@ define([
 			});	
 			self.$el.find(self.elms.item).eq(index).addClass('last');
 			
+			if (self.options.textPosition == 'auto') {
+				flag = true;
+				// Auto text position
+				self.$el.find(self.elms.item).each(function() {
+					if ($(this).is('.text-hover') == false) {
+				
+					$(this).removeClass('text-left text-right');
+					if (flag == true)
+						$(this).addClass('text-left');
+					else
+						$(this).addClass('text-right');
+					if ($(this).is('.last'))
+						flag = !flag;
+					}
+				});	
+			}
 			
 			// Set bottom margin
 			if (self.options.margin > 0) {
@@ -91,7 +108,6 @@ define([
 		resizeGrid: function() {
 			var self = this;
 			var widthItem = Math.round((self.$el.width() - (self.options.columns * 2 - 1) * self.options.margin) / self.options.columns / 2);
-			console.log(widthItem);
 			var rowWidth = (widthItem * self.options.columns * 2) + ((self.options.columns * 2 - 1) * self.options.margin);
 			var deltaLast = rowWidth - self.$el.width();
 
@@ -129,8 +145,9 @@ define([
 					$(this).find('.chess-grid-image').css('marginLeft', rate);
 				}
 				if ($(this).is('.text-right')) {
-					$(this).find('.chess-grid-text').width(rate);
-					$(this).find('.chess-grid-image').css('marginRight', rate);
+					var w = $(this).width() - rate;
+					$(this).find('.chess-grid-text').width(w);
+					$(this).find('.chess-grid-image').css('marginRight', w);
 				}			
 				
 				//self.setImageSize($(this).find('.chess-grid-image img'));
